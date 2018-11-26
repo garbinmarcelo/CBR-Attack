@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="D:/workspace_java/CBR-Attackv0/libs/org.apache.commons.logging_1.0.4.v201101211617.jar"/>
+	<classpathentry kind="lib" path="D:/workspace_java/CBR-Attackv0/libs/jcolibri2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
