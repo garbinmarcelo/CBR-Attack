@@ -1,53 +1,70 @@
 package cbr;
 
 import config.CaseDescription;
+import jcolibri.cbrcore.CBRQuery;
+import jcolibri.exception.ExecutionException;
+import jcolibri.method.retrieve.RetrievalResult;
 
 public class RealizaConsulta {
 
 	public String realizaConsulta(Integer tipo,
-			Integer ipOrigem,
+			Long ipOrigem,
 			Integer portaOrigem,
-			Integer urlAfetada,
 			Integer hostnameOrigem,
-			Integer ipDestino,
+			Long ipDestino,
 			Integer portaDestino,
-			Integer hostnameDestino,
-			String malware,
-			String protocolo,
+			Integer malware,
+			Integer protocolo,
 			Integer sistemaOperacional) {
-		
-		// seta os atributos da consulta
-		CaseDescription consulta = new CaseDescription();
-		consulta.setTipo(tipo);
-		consulta.setIpOrigem(ipOrigem);
-		consulta.setPortaOrigem(portaOrigem);
-		consulta.setUrlAfetada(urlAfetada);
-		consulta.setHostnameOrigem(hostnameOrigem);
-		consulta.setIpDestino(ipDestino);
-		consulta.setPortaDestino(portaDestino);
-		consulta.setHostnameDestino(hostnameDestino);
-		consulta.setMalware(malware);
-		consulta.setProtocolo(protocolo);
-		consulta.setSistemaOperacional(sistemaOperacional);
+
+		System.out.println("Setando consulta...");
+		AttackCBR cbr = new AttackCBR();
+		try {
+			cbr.configure();
+			cbr.preCycle();
 	
-		
-		// faz a consulta e retorna para o caseDescription de 1 resultado
-		CaseDescription descriptionSolucao = new CaseDescription();
-		descriptionSolucao = new AttackCBR().getBestResult(consulta);
-		return new SolPassos().getSolucao(descriptionSolucao);
-		
-		/*
-		// faz a consulta e retorna para o caseDescription de varios resultados
-		List<CaseDescription> descriptionSolucoes = new ArrayList<CaseDescription>();
-		descriptionSolucoes = new AttackCBR().getResults(consulta);
-		return new SolPassos().getSolucao(descriptionSolucoes);
-		*/
+			CaseDescription consulta = new CaseDescription();
+			consulta.setTipo(tipo);
+			consulta.setIpOrigem(ipOrigem);
+			consulta.setPortaOrigem(portaOrigem);
+			consulta.setHostnameOrigem(hostnameOrigem);
+			consulta.setIpDestino(ipDestino);
+			consulta.setPortaDestino(portaDestino);
+			consulta.setMalware(malware);
+			consulta.setProtocolo(protocolo);
+			consulta.setSistemaOperacional(sistemaOperacional);
+
+			CBRQuery query = new CBRQuery();
+			query.setDescription(consulta);
+			
+			//System.out.println("Query: " + query);
+			cbr.cycle(query);
+			
+			/**
+			 * solucao do melhor caso
+			 */
+			//System.out.println(new SolPassos().getSolucao(cbr.getBestCase()));
+			
+			/**
+			 * solucao de varios casos
+			 */			
+			for(RetrievalResult nse: cbr.getSelectedCases()) {
+				CaseDescription result = (CaseDescription) nse.get_case().getDescription();
+				System.out.println("ID: " + result.getId() +" com similaridade de " + nse.getEval());
+				System.out.println("Solução: " + new SolPassos().getSolucao(nse));
+				System.out.println("---------------------------------");
+			}
+		} catch (ExecutionException e) {
+			e.printStackTrace();
 		}
+		
+		
+		return "";
+	}
 
 	public static void main(String[] args) {
 		System.out.println("-- Realiza Consulta --");
-		//System.out.println(new RealizaConsulta().realizaConsulta("Tentativa de Login", 48, null, 70, null, null, null, null, null, null, null));
-		System.out.println(new RealizaConsulta().realizaConsulta(1, 44, 50663, 36, 24, 65, 80, null, "Bedep", null, 1));
-		System.out.println("-- Fim Consulta --");
+		RealizaConsulta consulta = new RealizaConsulta();
+		consulta.realizaConsulta(1, Long.valueOf("3356633862"), 55605, 28, Long.valueOf("3356633862"), 80, 4, 0, 1);
 	}
 }

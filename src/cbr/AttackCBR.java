@@ -1,17 +1,16 @@
 package cbr;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import config.CaseDescription;
-import jcolibri.casebase.LinealCaseBase;
+import jcolibri.cbraplications.StandardCBRApplication;
 import jcolibri.cbrcore.Attribute;
+import jcolibri.cbrcore.CBRCase;
 import jcolibri.cbrcore.CBRCaseBase;
 import jcolibri.cbrcore.CBRQuery;
 import jcolibri.cbrcore.Connector;
-import jcolibri.connector.PlainTextConnector;
 import jcolibri.exception.ExecutionException;
+import jcolibri.exception.InitializingException;
 import jcolibri.method.retrieve.RetrievalResult;
 import jcolibri.method.retrieve.NNretrieval.NNConfig;
 import jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
@@ -20,196 +19,275 @@ import jcolibri.method.retrieve.NNretrieval.similarity.local.Equal;
 import jcolibri.method.retrieve.NNretrieval.similarity.local.Interval;
 import jcolibri.method.retrieve.selection.SelectCases;
 
-public class AttackCBR {
+public class AttackCBR implements StandardCBRApplication {
 
-	Connector _connector;
-	CBRCaseBase _caseBase;
-	CaseDescription best_case = null;
-	CaseDescription estadoConsulta = null;
-	CBRCaseBase casebase;
+	private Connector connector;
+	private CBRCaseBase casebase;
+	private RetrievalResult bestCase = null;
+	private Integer kCases = 3;
+	private Collection<RetrievalResult> eval;
+	private Collection<RetrievalResult> selectedCases;
 
-	int passos = 0;
+	//private CaseDescription description;
+	/*
+	private Collection<RetrievalResult> eval;
+	private Collection<CBRCase> selectedCases;
+	private Collection<CBRCase> combinedCases;
+	 */
 
-	public void initialize() throws ExecutionException {
-		try{
-			_connector = new PlainTextConnector();
-			_connector.initFromXMLfile(jcolibri.util.FileIO.findFile("config/plaintextconfig.xml"));
-			_caseBase  = new LinealCaseBase();
-		} catch (Exception e){
+	/**
+	 * Configuration
+	 */
+	@Override
+	public void configure() throws ExecutionException {
+		try {
+			configureConnector();
+			configureCaseBase();
+		} catch (Exception e) {
 			throw new ExecutionException(e);
 		}
 	}
 
-	public CBRCaseBase openConnection() throws ExecutionException {
-		_caseBase.init(_connector);
-		//		        java.util.Collection<CBRCase> cases = _caseBase.getCases();
-		//		        CaseDescription bc = null;
-		//		        for(CBRCase c: cases) {
-		//		            bc = (CaseDescription) c.getDescription();
-		//		            System.out.println(bc.getTipo());
-		//		        }
-		return _caseBase;
+	/**
+	 * Configures the connector
+	 */
+	private void configureConnector() throws InitializingException {
+		connector = new jcolibri.connector.PlainTextConnector();
+		connector.initFromXMLfile(jcolibri.util.FileIO
+				.findFile("config/plaintextconfig.xml"));
 	}
 
-	public void closeConnection() throws ExecutionException {
-		_connector.close();
+	/**
+	 * Configures the case base
+	 */
+	private void configureCaseBase() throws InitializingException {
+		casebase = new jcolibri.casebase.LinearCaseBase();
 	}
 
-	public Collection<RetrievalResult> executeQueryConsultaOqueFazer(CBRQuery query) throws ExecutionException {
+	/**
+	 * Similarity
+	 * Configures the similarity
+	 */
+	private NNConfig getSimilarityConfig() {
 		NNConfig simConfig = new NNConfig();
+		return simConfig;
+	}
+
+	/**
+	 * preCycle
+	 */
+	@Override
+	public CBRCaseBase preCycle() throws ExecutionException {
+		casebase.init(connector);
+		return casebase;
+	}
+
+	/**
+	 * cycle
+	 */
+	@Override
+	public void cycle(CBRQuery query) throws ExecutionException {
+		// Obtain configuration for KNN
+		NNConfig simConfig = this.getSimilarityConfig();
 		simConfig.setDescriptionSimFunction(new Average());
 
-		/*
-			Attribute tipo = new Attribute("tipo", CaseDescription.class); 
-			simConfig.addMapping(tipo, new Equal());
-	
-			Attribute ipOrigem = new Attribute("ipOrigem", CaseDescription.class); 
-			simConfig.addMapping(ipOrigem, new Equal());
-	
-			Attribute portaOrigem = new Attribute("portaOrigem", CaseDescription.class); 
-			simConfig.addMapping(portaOrigem, new Equal());
-	
-			Attribute urlAfetada = new Attribute("urlAfetada", CaseDescription.class); 
-			simConfig.addMapping(urlAfetada, new Equal());
-	
-			Attribute hostnameOrigem = new Attribute("hostnameOrigem", CaseDescription.class); 
-			simConfig.addMapping(hostnameOrigem, new Equal());
-	
-			Attribute ipDestino = new Attribute("ipDestino", CaseDescription.class); 
-			simConfig.addMapping(ipDestino, new Equal());
-	
-			Attribute portaDestino = new Attribute("portaDestino", CaseDescription.class); 
-			simConfig.addMapping(portaDestino, new Equal());
-	
-			Attribute hostnameDestino = new Attribute("hostnameDestino", CaseDescription.class); 
-			simConfig.addMapping(hostnameDestino, new Equal());
-	
-			Attribute malware = new Attribute("malware", CaseDescription.class); 
-			simConfig.addMapping(malware, new Equal());
-	
-			Attribute protocolo = new Attribute("protocolo", CaseDescription.class); 
-			simConfig.addMapping(protocolo, new Equal());
-	
-			Attribute sistemaOperacional = new Attribute("sistemaOperacional", CaseDescription.class); 
-			simConfig.addMapping(sistemaOperacional, new Equal());
+		/**
+		 *  Set config Weight
+		 *  tipo,ipOrigem,portaOrigem,urlAfetada,hostnameOrigem,ipDestino,portaDestino,hostnameDestino,malware,protocolo,sistemaOperacional
 		 */
+		PesosAtributos pesos = new PesosAtributos(
+				1.0, // tipo
+				1.0, // ipOrigem
+				1.0, // portaOrigem
+				1.0, // hostnameOrigem
+				1.0, // ipDestino
+				1.0, // portaDestino
+				1.0, // malware
+				1.0, // protocolo
+				1.0 // sistemaOperacional
+		);
 
-		Attribute tipo = new Attribute("tipo", CaseDescription.class); 
+		/**
+		 *  Set config similarity
+		 */
+		Attribute tipo = new Attribute("tipo", CaseDescription.class);
 		simConfig.addMapping(tipo, new Equal());
+		simConfig.setWeight(tipo, pesos.getTipo());
 
-		Attribute ipOrigem = new Attribute("ipOrigem", CaseDescription.class); 
-		simConfig.addMapping(ipOrigem, new Interval(90));
+		Attribute ipOrigem = new Attribute("ipOrigem", CaseDescription.class);
+		simConfig.addMapping(ipOrigem, new Equal());
+		simConfig.setWeight(ipOrigem, pesos.getIpOrigem());
 
-		Attribute portaOrigem = new Attribute("portaOrigem", CaseDescription.class); 
-		simConfig.addMapping(portaOrigem, new Equal());
+		Attribute portaOrigem = new Attribute("portaOrigem", CaseDescription.class);
+		simConfig.addMapping(portaOrigem, new Interval(64406));
+		simConfig.setWeight(portaOrigem, pesos.getPortaOrigem());
 
-		Attribute urlAfetada = new Attribute("urlAfetada", CaseDescription.class); 
-		simConfig.addMapping(urlAfetada, new Interval(90));
+		Attribute hostnameOrigem = new Attribute("hostnameOrigem", CaseDescription.class);
+		simConfig.addMapping(hostnameOrigem, new Equal());
+		simConfig.setWeight(hostnameOrigem, pesos.getHostnameOrigem());
 
-		Attribute hostnameOrigem = new Attribute("hostnameOrigem", CaseDescription.class); 
-		simConfig.addMapping(hostnameOrigem, new Interval(34));
-
-		Attribute ipDestino = new Attribute("ipDestino", CaseDescription.class); 
+		Attribute ipDestino = new Attribute("ipDestino", CaseDescription.class);
 		simConfig.addMapping(ipDestino, new Equal());
+		simConfig.setWeight(ipDestino, pesos.getIpDestino());
 
-		Attribute portaDestino = new Attribute("portaDestino", CaseDescription.class); 
-		simConfig.addMapping(portaDestino, new Equal());
+		Attribute portaDestino = new Attribute("portaDestino", CaseDescription.class);
+		simConfig.addMapping(portaDestino, new Interval(9674));
+		simConfig.setWeight(portaDestino, pesos.getPortaDestino());
 
-		Attribute hostnameDestino = new Attribute("hostnameDestino", CaseDescription.class); 
-		simConfig.addMapping(hostnameDestino, new Interval(25));
-
-		Attribute malware = new Attribute("malware", CaseDescription.class); 
+		Attribute malware = new Attribute("malware", CaseDescription.class);
 		simConfig.addMapping(malware, new Equal());
+		simConfig.setWeight(malware, pesos.getMalware());
 
-		Attribute protocolo = new Attribute("protocolo", CaseDescription.class); 
+		Attribute protocolo = new Attribute("protocolo", CaseDescription.class);
 		simConfig.addMapping(protocolo, new Equal());
+		simConfig.setWeight(protocolo, pesos.getProtocolo());
 
-		Attribute sistemaOperacional = new Attribute("sistemaOperacional", CaseDescription.class); 
+		Attribute sistemaOperacional = new Attribute("sistemaOperacional", CaseDescription.class);
 		simConfig.addMapping(sistemaOperacional, new Equal());
+		simConfig.setWeight(sistemaOperacional, pesos.getSistemaOperacional());
 
-		Collection<RetrievalResult> eval = NNScoringMethod.evaluateSimilarity(_caseBase.getCases(), query, simConfig);
-
+		// Execute NN
+		Collection<RetrievalResult> eval = NNScoringMethod.evaluateSimilarity(casebase.getCases(), query, simConfig);
+		
 		// Select k cases
-		eval = SelectCases.selectTopKRR(eval, 5);
+		Collection<RetrievalResult> selectedCases = SelectCases.selectTopKRR(eval, this.kCases);
 
-		// Print the retrieval
-		//		 System.out.println("Retrieved cases:");
-		//		        for(RetrievalResult nse: eval) {
-		//		            CaseDescription result = (CaseDescription) nse.get_case().getDescription();
-		//		            // System.out.println(result.getCASEID()+" -> "+nse.getEval());
-		//		        }
+		/**
+		 * Set Eval
+		 */
+		this.setEval(eval);
 
-		// save best case
-		// best_case = eval.get(0);
+		/**
+		 * Set SelectedCases
+		 */
+		this.setSelectedCases(selectedCases);
+		
+		/**
+		 * Set BestCase
+		 */
+		this.setBestCase(selectedCases.iterator().next());
+		
+		/**
+		 *  Show Weight attributes
+		 */
+		/*
+		System.out.println("Peso tipo: " + simConfig.getWeight(tipo));
+		System.out.println("Peso ipOrigem: " + simConfig.getWeight(ipOrigem));
+		System.out.println("Peso portaOrigem: " + simConfig.getWeight(portaOrigem));
+		System.out.println("Peso urlAfetada: " + simConfig.getWeight(urlAfetada));
+		System.out.println("Peso hostnameOrigem: " + simConfig.getWeight(hostnameOrigem));
+		System.out.println("Peso ipDestino: " + simConfig.getWeight(ipDestino));
+		System.out.println("Peso portaDestino: " + simConfig.getWeight(portaDestino));
+		System.out.println("Peso hostnameDestino: " + simConfig.getWeight(hostnameDestino));
+		System.out.println("Peso malware: " + simConfig.getWeight(malware));
+		System.out.println("Peso protocolo: " + simConfig.getWeight(protocolo));
+		System.out.println("Peso sistemaOperacional: " + simConfig.getWeight(sistemaOperacional));
+		*/
+
+		/*
+		// Show retrieved cases 
+		System.out.println("Show retrieved cases(" + eval.size() + "): ");
+		for (final RetrievalResult rrc: eval) {
+			System.out.println(rrc);
+		}
+		*/
+		
+		// Show selected Case
+		/*
+		System.out.println("Show retrieved cases(" + selectedCases.size() + "): ");
+		for (final RetrievalResult rrc: selectedCases) {
+			System.out.println(rrc);
+		}
+		*/
+		
+		 
+		return;
+	}
+
+	@Override
+	public void postCycle() throws ExecutionException {
+		this.connector.close();
+	}
+
+	public RetrievalResult getBestCase() {
+		return bestCase;
+	}
+
+	public void setBestCase(RetrievalResult bestCase) {
+		this.bestCase = bestCase;
+	}
+
+	public Collection<CBRCase> getCasebase() {
+		return this.casebase.getCases();
+	}
+
+	public void setCasebase(CBRCaseBase casebase) {
+		this.casebase = casebase;
+	}
+
+	public Collection<RetrievalResult> getEval() {
 		return eval;
 	}
 
-	public AttackCBR() {
-		try {
-			initialize();
-			openConnection();
-		} catch (ExecutionException e) {
-			org.apache.commons.logging.LogFactory.getLog(AttackCBR.class).error(e);
-		}
+	public void setEval(Collection<RetrievalResult> eval) {
+		this.eval = eval;
+	}
+	
+	public Collection<RetrievalResult> getSelectedCases() {
+		return selectedCases;
 	}
 
-	//
-	//
-	//
-	public CaseDescription getBestResult(CaseDescription game_state) {
-		System.out.println("Fazendo uma nova consulta...");
-		try {
-			CaseDescription queryDesc = game_state;
-			CBRQuery query = new CBRQuery();
-			query.setDescription(queryDesc);
-			Collection<RetrievalResult> results = executeQueryConsultaOqueFazer(query);
-
-			best_case = (CaseDescription) results.iterator().next().get_case().getDescription();
-			//System.out.print("Melhor caso encontrado: " + best_case.CASEID);
-			System.out.print("Melhor caso encontrado: " + best_case.getCASEID());
-			System.out.println(" com similaridade: " + results.iterator().next().getEval());
-		} catch (ExecutionException e) {
-			System.out.println(e.getMessage());
-			org.apache.commons.logging.LogFactory.getLog(AttackCBR.class).error(e);
-		}
-
-		return best_case;
+	public void setSelectedCases(Collection<RetrievalResult> selectedCases) {
+		this.selectedCases = selectedCases;
 	}
+	
+	public static void main(String[] args){
+		/*
+		AttackCBR cbr = new AttackCBR();
+		//IpToDecimal ip = new IpToDecimal();
+		//System.out.println(ip.longToIp(Long.parseLong("3356633862")));
 
-	public List<CaseDescription> getResults(CaseDescription game_state) {
-		System.out.println("Fazendo uma nova consulta...");
-		List<CaseDescription> casos = new ArrayList<CaseDescription>();
+	
 		try {
-			CaseDescription queryDesc = game_state;
+			cbr.configure();
+			cbr.preCycle();
+	
+			CaseDescription consulta = new CaseDescription();
+			consulta.setTipo(1);
+			consulta.setIpOrigem(Long.valueOf("3356633862"));
+			consulta.setPortaOrigem(55605);
+			consulta.setHostnameOrigem(28);
+			consulta.setIpDestino(Long.valueOf("3356633862"));
+			consulta.setPortaDestino(80);
+			consulta.setMalware(4);
+			consulta.setProtocolo(0);
+			consulta.setSistemaOperacional(1);
+
+			System.out.println("Consulta: " + consulta);
+
 			CBRQuery query = new CBRQuery();
-			query.setDescription(queryDesc);
+			query.setDescription(consulta);
 			
-			Collection<RetrievalResult> results = executeQueryConsultaOqueFazer(query);
+			cbr.cycle(query);
+			
+			//System.out.println("MAIN CBR");
+			//System.out.println(cbr.getBestCase().getEval());
+			//System.out.println(cbr.getSelectedCases().size());
+			//System.out.println(cbr.getEval());
+			//System.out.println(cbr.getCasebase().size());
+			//System.out.println(cbr.casebase);
+			
+			// list case base
+			// System.out.println(caseBase.getCases().size());
+			// for (CBRCase c : caseBase.getCases()) {
+			//	System.out.println(c);
+			// }
+		
+			
 
-			System.out.println(results.size() + " casos retornados:");
-			for(RetrievalResult nse: results) {
-				CaseDescription result = (CaseDescription) nse.get_case().getDescription();
-				System.out.println("ID: " + result.getCASEID()+" com similaridade de " + nse.getEval());
-				casos.add(result);
-			}
-			//System.out.println(casos);
 		} catch (ExecutionException e) {
-			System.out.println(e.getMessage());
-			org.apache.commons.logging.LogFactory.getLog(AttackCBR.class).error(e);
+			e.printStackTrace();
 		}
-		return casos;
-	}
-
-	public String qualPassoParaResolverOproblema(CaseDescription cd) {
-		String oQueFazer=null;
-
-		//oQueFazer = getBestResult(cd);
-
-		return oQueFazer;
-
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Rodando Class AttackCBR");
+		*/
 	}
 }

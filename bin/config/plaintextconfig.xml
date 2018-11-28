@@ -1,19 +1,21 @@
 <TextFileConfiguration>
-    <FilePath>baseCasos/baseTestes.csv</FilePath>
-    <Delimiters>,</Delimiters>
-    <DescriptionClassName>config.CaseDescription</DescriptionClassName>
-    <DescriptionMappings>
+	<FilePath>baseCasos/baseTestes.txt</FilePath>
+	<Delimiters>,</Delimiters>
+	<DescriptionClassName>config.CaseDescription</DescriptionClassName>
+	<DescriptionMappings>
+		<Map>id</Map>
 		<Map>tipo</Map>
 		<Map>ipOrigem</Map>
 		<Map>portaOrigem</Map>
-		<Map>urlAfetada</Map>
 		<Map>hostnameOrigem</Map>
 		<Map>ipDestino</Map>
 		<Map>portaDestino</Map>
-		<Map>hostnameDestino</Map>
 		<Map>malware</Map>
 		<Map>protocolo</Map>
 		<Map>sistemaOperacional</Map>
+	</DescriptionMappings>
+	<SolutionClassName>config.SolutionDescription</SolutionClassName>
+	<SolutionMappings>
 		<Map>passo1</Map>
 		<Map>passo2</Map>
 		<Map>passo3</Map>
@@ -28,5 +30,5 @@
 		<Map>passo12</Map>
 		<Map>passo13</Map>
 		<Map>passo14</Map>
-    </DescriptionMappings>
+	</SolutionMappings>
 </TextFileConfiguration>

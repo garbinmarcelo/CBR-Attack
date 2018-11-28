@@ -1,53 +1,59 @@
 package cbr;
 
-import java.util.List;
+import java.util.Collection;
 
-import config.CaseDescription;
+import config.SolutionDescription;
+import jcolibri.method.retrieve.RetrievalResult;
+import models.Passos;
 
 public class SolPassos {
-
-	public String getSolucao(CaseDescription cd) {
-
+	
+	public String getSolucao(RetrievalResult cd) {
+		// Transforma em solucao do caso recuperado 
+		SolutionDescription solucao = (SolutionDescription) cd.get_case().getSolution();
+		
 		String solucaoFinal = "";
-		if(cd.getPasso1() != null) solucaoFinal += "\n 1 - " + new PassosModelo().consultarPasso(1);
-		if(cd.getPasso2() != null) solucaoFinal += "\n 2 - " + new PassosModelo().consultarPasso(2);
-		if(cd.getPasso3() != null) solucaoFinal += "\n 3 - " + new PassosModelo().consultarPasso(3);
-		if(cd.getPasso4() != null) solucaoFinal += "\n 4 - " + new PassosModelo().consultarPasso(4);
-		if(cd.getPasso5() != null) solucaoFinal += "\n 5 - " + new PassosModelo().consultarPasso(5);
-		if(cd.getPasso6() != null) solucaoFinal += "\n 6 - " + new PassosModelo().consultarPasso(6);
-		if(cd.getPasso7() != null) solucaoFinal += "\n 7 - " + new PassosModelo().consultarPasso(7);
-		if(cd.getPasso8() != null) solucaoFinal += "\n 8 - " + new PassosModelo().consultarPasso(8);
-		if(cd.getPasso9() != null) solucaoFinal += "\n 9 - " + new PassosModelo().consultarPasso(9);
-		if(cd.getPasso10() != null) solucaoFinal += "\n 10 - " + new PassosModelo().consultarPasso(10);
-		if(cd.getPasso11() != null) solucaoFinal += "\n 11 - " + new PassosModelo().consultarPasso(11);
-		if(cd.getPasso12() != null) solucaoFinal += "\n 12 - " + new PassosModelo().consultarPasso(12);
-		if(cd.getPasso13() != null) solucaoFinal += "\n 13 - " + new PassosModelo().consultarPasso(13);
-		if(cd.getPasso14() != null) solucaoFinal += "\n 14 - " + new PassosModelo().consultarPasso(14);
-
+		
+		if(solucao.getPasso1() != 0) solucaoFinal += "\n 1 - " + new Passos().getPasso(solucao.getPasso1());
+		if(solucao.getPasso2() != 0) solucaoFinal += "\n 2 - " + new Passos().getPasso(solucao.getPasso2());
+		if(solucao.getPasso3() != 0) solucaoFinal += "\n 3 - " + new Passos().getPasso(solucao.getPasso3());
+		if(solucao.getPasso4() != 0) solucaoFinal += "\n 4 - " + new Passos().getPasso(solucao.getPasso4());
+		if(solucao.getPasso5() != 0) solucaoFinal += "\n 5 - " + new Passos().getPasso(solucao.getPasso5());
+		if(solucao.getPasso6() != 0) solucaoFinal += "\n 6 - " + new Passos().getPasso(solucao.getPasso6());
+		if(solucao.getPasso7() != 0) solucaoFinal += "\n 7 - " + new Passos().getPasso(solucao.getPasso7());
+		if(solucao.getPasso8() != 0) solucaoFinal += "\n 8 - " + new Passos().getPasso(solucao.getPasso8());
+		if(solucao.getPasso9() != 0) solucaoFinal += "\n 9 - " + new Passos().getPasso(solucao.getPasso9());
+		if(solucao.getPasso10() != 0) solucaoFinal += "\n 10 - " + new Passos().getPasso(solucao.getPasso10());
+		if(solucao.getPasso11() != 0) solucaoFinal += "\n 11 - " + new Passos().getPasso(solucao.getPasso11());
+		if(solucao.getPasso12() != 0) solucaoFinal += "\n 12 - " + new Passos().getPasso(solucao.getPasso12());
+		if(solucao.getPasso13() != 0) solucaoFinal += "\n 13 - " + new Passos().getPasso(solucao.getPasso13());
+		if(solucao.getPasso14() != 0) solucaoFinal += "\n 14 - " + new Passos().getPasso(solucao.getPasso14());
+	
 		return solucaoFinal;
 	}
+	
+	public String getSolucao(Collection<RetrievalResult> collection) {
 
-
-
-	public String getSolucao(List<CaseDescription> listaCasos) {
-		String solucaoFinal = "";	
-		for(CaseDescription cd : listaCasos) {
-			if(cd.getPasso1() != null) solucaoFinal += "\n 1 - " + new PassosModelo().consultarPasso(1);
-			if(cd.getPasso2() != null) solucaoFinal += "\n 2 - " + new PassosModelo().consultarPasso(2);
-			if(cd.getPasso3() != null) solucaoFinal += "\n 3 - " + new PassosModelo().consultarPasso(3);
-			if(cd.getPasso4() != null) solucaoFinal += "\n 4 - " + new PassosModelo().consultarPasso(4);
-			if(cd.getPasso5() != null) solucaoFinal += "\n 5 - " + new PassosModelo().consultarPasso(5);
-			if(cd.getPasso6() != null) solucaoFinal += "\n 6 - " + new PassosModelo().consultarPasso(6);
-			if(cd.getPasso7() != null) solucaoFinal += "\n 7 - " + new PassosModelo().consultarPasso(7);
-			if(cd.getPasso8() != null) solucaoFinal += "\n 8 - " + new PassosModelo().consultarPasso(8);
-			if(cd.getPasso9() != null) solucaoFinal += "\n 9 - " + new PassosModelo().consultarPasso(9);
-			if(cd.getPasso10() != null) solucaoFinal += "\n 10 - " + new PassosModelo().consultarPasso(10);
-			if(cd.getPasso11() != null) solucaoFinal += "\n 11 - " + new PassosModelo().consultarPasso(11);
-			if(cd.getPasso12() != null) solucaoFinal += "\n 12 - " + new PassosModelo().consultarPasso(12);
-			if(cd.getPasso13() != null) solucaoFinal += "\n 13 - " + new PassosModelo().consultarPasso(13);
-			if(cd.getPasso14() != null) solucaoFinal += "\n 14 - " + new PassosModelo().consultarPasso(14);
+		String solucaoFinal = "";
+		
+		for(RetrievalResult nse: collection) {
+			SolutionDescription solucao = (SolutionDescription) nse.get_case().getSolution();
+			if(solucao.getPasso1() != 0) solucaoFinal += "\n 1 - " + new Passos().getPasso(solucao.getPasso1());
+			if(solucao.getPasso2() != 0) solucaoFinal += "\n 2 - " + new Passos().getPasso(solucao.getPasso2());
+			if(solucao.getPasso3() != 0) solucaoFinal += "\n 3 - " + new Passos().getPasso(solucao.getPasso3());
+			if(solucao.getPasso4() != 0) solucaoFinal += "\n 4 - " + new Passos().getPasso(solucao.getPasso4());
+			if(solucao.getPasso5() != 0) solucaoFinal += "\n 5 - " + new Passos().getPasso(solucao.getPasso5());
+			if(solucao.getPasso6() != 0) solucaoFinal += "\n 6 - " + new Passos().getPasso(solucao.getPasso6());
+			if(solucao.getPasso7() != 0) solucaoFinal += "\n 7 - " + new Passos().getPasso(solucao.getPasso7());
+			if(solucao.getPasso8() != 0) solucaoFinal += "\n 8 - " + new Passos().getPasso(solucao.getPasso8());
+			if(solucao.getPasso9() != 0) solucaoFinal += "\n 9 - " + new Passos().getPasso(solucao.getPasso9());
+			if(solucao.getPasso10() != 0) solucaoFinal += "\n 10 - " + new Passos().getPasso(solucao.getPasso10());
+			if(solucao.getPasso11() != 0) solucaoFinal += "\n 11 - " + new Passos().getPasso(solucao.getPasso11());
+			if(solucao.getPasso12() != 0) solucaoFinal += "\n 12 - " + new Passos().getPasso(solucao.getPasso12());
+			if(solucao.getPasso13() != 0) solucaoFinal += "\n 13 - " + new Passos().getPasso(solucao.getPasso13());
+			if(solucao.getPasso14() != 0) solucaoFinal += "\n 14 - " + new Passos().getPasso(solucao.getPasso14());
 		}
-
+		
 		return solucaoFinal;
 	}
 }
