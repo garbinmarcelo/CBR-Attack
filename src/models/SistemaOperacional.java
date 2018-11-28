@@ -43,6 +43,7 @@ public class SistemaOperacional {
 	private ArrayList<SistemaOperacional> sistemasOperacionais(){
 		ArrayList<SistemaOperacional> registros = new ArrayList<>();
 
+		registros.add(new SistemaOperacional(0 ,"Vazio"));
 		registros.add(new SistemaOperacional(1 ,"Linux"));
 		registros.add(new SistemaOperacional(2 ,"Windows"));
 

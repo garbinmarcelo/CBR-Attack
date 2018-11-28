@@ -43,6 +43,7 @@ public class TipoIncidente {
 	private ArrayList<TipoIncidente> tiposIncidentes(){
 		ArrayList<TipoIncidente> tiposIncidentes = new ArrayList<TipoIncidente>();
 
+		tiposIncidentes.add(new TipoIncidente(0 ,"Vazio"));
 		tiposIncidentes.add(new TipoIncidente(1 ,"Bot"));
 		tiposIncidentes.add(new TipoIncidente(2 ,"Defacement"));
 		tiposIncidentes.add(new TipoIncidente(3 ,"DDoS"));

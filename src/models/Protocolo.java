@@ -43,6 +43,7 @@ public class Protocolo {
 	private ArrayList<Protocolo> protocolos(){
 		ArrayList<Protocolo> registros = new ArrayList<>();
 
+		registros.add(new Protocolo(0 ,"Vazio"));
 		registros.add(new Protocolo(1 ,"HTTP"));
 		registros.add(new Protocolo(2 ,"BITTORRENT"));
 		registros.add(new Protocolo(3 ,"UDP"));

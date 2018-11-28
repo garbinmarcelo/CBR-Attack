@@ -10,11 +10,9 @@ public class LoaderTelaConsulta extends Application {
 
     @Override
      public void start(Stage stage) throws Exception {
-    	System.out.println("Rodando metodo loader Tela");
         Parent root = FXMLLoader.load(getClass().getResource("/gui/view/TelaConsulta.fxml"));
-        
         Scene scene = new Scene(root);
-        
+        stage.setTitle("Consultar Casos");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

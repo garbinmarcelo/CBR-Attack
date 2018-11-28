@@ -43,6 +43,7 @@ public class HostnameOrigem {
 	private ArrayList<HostnameOrigem> hostnames(){
 		ArrayList<HostnameOrigem> registros = new ArrayList<>();
 
+		registros.add(new HostnameOrigem(0 ,"Vazio"));
 		registros.add(new HostnameOrigem(1 ,"proxy-234.ufsm.br"));
 		registros.add(new HostnameOrigem(2 ,"proxy01.ufsm.br"));
 		registros.add(new HostnameOrigem(3 ,"proxy-231.ufsm.br"));

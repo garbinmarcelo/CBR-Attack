@@ -65,6 +65,7 @@ public class RealizaConsulta {
 	public static void main(String[] args) {
 		System.out.println("-- Realiza Consulta --");
 		RealizaConsulta consulta = new RealizaConsulta();
-		consulta.realizaConsulta(1, Long.valueOf("3356633862"), 55605, 28, Long.valueOf("3356633862"), 80, 4, 0, 1);
+		consulta.realizaConsulta(0, 0L, 0, 0, 0L, 0, 0, 0, 0);
+		//consulta.realizaConsulta(1, Long.valueOf("3356633862"), 55605, 28, Long.valueOf("3356633862"), 80, 4, 0, 1);
 	}
 }
