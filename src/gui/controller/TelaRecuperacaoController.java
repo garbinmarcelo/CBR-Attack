@@ -143,6 +143,7 @@ public class TelaRecuperacaoController {
 	}
 
 	private void atualizarComboBox() {
+		System.out.println("Seta valores ComboBox...");
 		// Tipo de Incidente
 		TipoIncidente tipoIncidente = new TipoIncidente();
 		this.tipoIncidente.setItems(tipoIncidente.getTipoIncidenteList());

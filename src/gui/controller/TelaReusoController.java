@@ -1,9 +1,13 @@
 package gui.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import cbr.RealizaConsulta;
+import cbr.SolPassos;
 import config.CaseDescription;
 import gui.negocio.DadosCaso;
 import javafx.collections.FXCollections;
@@ -31,6 +35,7 @@ public class TelaReusoController {
 	private final TelaRecuperacaoController controller1;
 
 	private Collection<RetrievalResult> casos = null;
+	private DadosCaso caso = null;
 
 	@FXML
 	private TableView<DadosCaso> tabelaReuso;
@@ -112,6 +117,25 @@ public class TelaReusoController {
 	@FXML
 	private void initialize() {
 		gerarTabela();
+		tabelaReuso.getSelectionModel().selectedItemProperty().addListener((Observable, oldValue, newValue) -> selecionarItemTabela(newValue));
+	}
+	
+	public void selecionarItemTabela(DadosCaso caso) {
+		this.setCaso(caso);
+		
+		TelaRevisaoController controller2 = new TelaRevisaoController(this);
+		// Show the new stage/window
+		controller2.showStage();
+		
+		return;
+	}
+	
+	public DadosCaso getCaso() {
+		return caso;
+	}
+
+	public void setCaso(DadosCaso caso) {
+		this.caso = caso;
 	}
 
 	public void gerarTabela() {
@@ -133,6 +157,21 @@ public class TelaReusoController {
 			CaseDescription result = (CaseDescription) nse.get_case().getDescription();
 			data.add(new DadosCaso(
 					result.getId(), 
+					String.valueOf(result.getTipo()),
+					String.valueOf(result.getHostnameOrigem()),
+					String.valueOf(result.getMalware()),
+					String.valueOf(result.getProtocolo()),
+					String.valueOf(result.getSistemaOperacional()),
+					String.valueOf(result.getIpOrigem()),
+					String.valueOf(result.getPortaOrigem()),
+					String.valueOf(result.getIpDestino()),
+					String.valueOf(result.getPortaDestino()),
+					String.valueOf(nse.getEval()),
+					String.valueOf(new SolPassos().getSolucao(nse))
+					));
+			/*
+			data.add(new DadosCaso(
+					result.getId(), 
 					String.valueOf(new TipoIncidente().getTipoIncidente(result.getTipo())),
 					String.valueOf(new HostnameOrigem().getHostname(result.getHostnameOrigem())),
 					String.valueOf(new Malware().getMalware(result.getMalware())),
@@ -142,23 +181,25 @@ public class TelaReusoController {
 					String.valueOf(result.getPortaOrigem()),
 					String.valueOf(result.getIpDestino()),
 					String.valueOf(result.getPortaDestino()),
-					String.valueOf(nse.getEval())
+					String.valueOf(nse.getEval()),
+					String.valueOf(new SolPassos().getSolucao(nse))
 					));
+					*/
 		}
 
 		/**
 		 * Popular tabela
 		 */
     	idCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("id"));
-    	tipoIncidenteCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("tipoIncidente"));
+    	tipoIncidenteCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("tipoIncidenteText"));
     	ipOrigemCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("ipOrigem"));
     	portaOrigemCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("portaOrigem"));
-    	hostnameOrigemCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("hostnameOrigem"));
+    	hostnameOrigemCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("hostnameOrigemText"));
     	ipDestinoCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("ipDestino"));
     	portaDestinoCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("portaDestino"));
-    	malwareCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("malware"));
-    	protocoloCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("protocolo"));
-    	sistemaOperacionalCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("sistemaOperacional"));    
+    	malwareCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("malwareText"));
+    	protocoloCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("protocoloText"));
+    	sistemaOperacionalCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("sistemaOperacionalText"));    
     	precisaoCol.setCellValueFactory(new PropertyValueFactory<DadosCaso, String>("precisao"));
     	tabelaReuso.setItems(data);
 	}

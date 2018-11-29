@@ -11,7 +11,7 @@ public class SolPassos {
 	public String getSolucao(RetrievalResult cd) {
 		// Transforma em solucao do caso recuperado 
 		SolutionDescription solucao = (SolutionDescription) cd.get_case().getSolution();
-		System.out.println(solucao);
+		//System.out.println(solucao);
 		String solucaoFinal = "";
 		
 		if(solucao.getPasso1() != 0) solucaoFinal += "\n 1 - " + new Passos().getPasso(solucao.getPasso1());
