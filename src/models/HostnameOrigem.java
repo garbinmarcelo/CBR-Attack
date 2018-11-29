@@ -70,6 +70,11 @@ public class HostnameOrigem {
 	}
 
 	public HostnameOrigem getHostname(int chave) {
-		return  hostnames().get(chave);
+		try {
+			return hostnames().get(chave);	
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }

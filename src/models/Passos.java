@@ -89,6 +89,10 @@ public class Passos {
 	}
 
 	public String getPasso(int chave) {
-		return  passos().get(chave);
+		try {
+			return passos().get(chave);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

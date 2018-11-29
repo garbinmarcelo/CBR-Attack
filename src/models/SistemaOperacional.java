@@ -57,7 +57,12 @@ public class SistemaOperacional {
 		return lista;		
 	}
 
-	public SistemaOperacional getTipoIncidente(int chave) {
-		return  sistemasOperacionais().get(chave);
+	public SistemaOperacional getSistemaOperacional(int chave) {
+		try {
+			return  sistemasOperacionais().get(chave);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }

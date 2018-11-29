@@ -66,6 +66,11 @@ public class Protocolo {
 	}
 
 	public Protocolo getProtocolo(int chave) {
-		return  protocolos().get(chave);
+		try {
+			return  protocolos().get(chave);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="12.0" layoutY="56.0" text="Casos Recuperados" />
+      <TableView fx:id="tabelaReuso" layoutX="12.0" layoutY="80.0" prefHeight="200.0" prefWidth="1420.0">
+        <columns>
+          <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="tipoIncidenteCol" prefWidth="75.0" text="TIPO" />
+            <TableColumn fx:id="ipOrigemCol" prefWidth="90.0" text="IP ORIGEM" />
+            <TableColumn fx:id="portaOrigemCol" prefWidth="115.0" text="PORTA ORIGEM" />
+            <TableColumn fx:id="hostnameOrigemCol" prefWidth="135.0" text="HOSTNAME ORIGEM" />
+            <TableColumn fx:id="ipDestinoCol" prefWidth="95.0" text="IP DESTINO" />
+            <TableColumn fx:id="portaDestinoCol" prefWidth="107.0" text="PORTA DESTINO" />
+            <TableColumn fx:id="malwareCol" prefWidth="85.0" text="MALWARE" />
+            <TableColumn fx:id="protocoloCol" prefWidth="87.0" text="PROTOCOLO" />
+            <TableColumn fx:id="sistemaOperacionalCol" prefWidth="65.0" text="S.O." />
+            <TableColumn fx:id="precisaoCol" prefWidth="75.0" text="PRECISÃO" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </children>
+</AnchorPane>

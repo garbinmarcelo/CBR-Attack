@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.TelaInicialController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane hgap="10.0" layoutX="-1.0" prefHeight="339.0" prefWidth="585.0">
         <columnConstraints>
@@ -46,7 +46,7 @@
             <TextField fx:id="portaOrigem" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="ipDestino" GridPane.rowIndex="5" />
             <TextField fx:id="portaDestino" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Button mnemonicParsing="false" onAction="#consultarCasos" text="Consultar Casos" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+            <Button fx:id="btnConsultarCasos" mnemonicParsing="false" text="Consultar Casos" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
             <ComboBox fx:id="protocolo" prefWidth="190.0" promptText="-- Selecionar --" GridPane.columnIndex="2" GridPane.rowIndex="5" />
          </children>
          <padding>

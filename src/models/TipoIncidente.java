@@ -67,6 +67,11 @@ public class TipoIncidente {
 	}
 
 	public TipoIncidente getTipoIncidente(int chave) {
-		return  tiposIncidentes().get(chave);
+		try {
+			return  tiposIncidentes().get(chave);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }

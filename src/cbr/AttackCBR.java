@@ -24,7 +24,7 @@ public class AttackCBR implements StandardCBRApplication {
 	private Connector connector;
 	private CBRCaseBase casebase;
 	private RetrievalResult bestCase = null;
-	private Integer kCases = 1;
+	private Integer kCases = 3;
 	private Collection<RetrievalResult> eval;
 	private Collection<RetrievalResult> selectedCases;
 
